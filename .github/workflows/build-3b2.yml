@@ -32,7 +32,7 @@ jobs:
         restore-keys: |
           sccache-${{ runner.os }}-
 
-    - name: Cache Yocto sstate
+    - name: Cache Yocto sstate and downloads
       uses: actions/cache@v4
       with:
         path: |
@@ -43,19 +43,17 @@ jobs:
           yocto-${{ runner.os }}-${{ hashFiles('3b2.yaml') }}-
           yocto-${{ runner.os }}-
 
-    - name: Install dependencies
+    - name: Install kas
       run: |
         sudo apt-get update
         sudo apt-get install -y kas
 
-    - name: Build with kas-container
+    - name: Build with kas
       run: |
-        kas-container build 3b2.yaml
+        kas build 3b2.yaml
       env:
-        SCCACHE_DIR: /workspace/.cache/sccache
+        SCCACHE_DIR: ${{ github.workspace }}/.cache/sccache
         SCCACHE_CACHE_SIZE: 5G
-        CXX: sccache clang++
-        CC: sccache clang
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
