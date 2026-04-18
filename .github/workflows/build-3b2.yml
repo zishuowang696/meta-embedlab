@@ -43,6 +43,11 @@ jobs:
           yocto-${{ runner.os }}-${{ hashFiles('3b2.yaml') }}-
           yocto-${{ runner.os }}-
 
+    - name: Enable user namespaces
+      run: |
+        sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+        echo "kernel.apparmor_restrict_unprivileged_userns=0" | sudo tee /etc/sysctl.d/99-userns.conf
+
     - name: Install kas and dependencies
       run: |
         sudo apt-get update
