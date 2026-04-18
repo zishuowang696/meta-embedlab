@@ -56,14 +56,6 @@ jobs:
     - name: Setup sccache
       uses: mozilla-actions/sccache-action@v0.0.6
 
-    - name: Cache sccache
-      uses: actions/cache@v4
-      with:
-        path: .cache/sccache
-        key: sccache-${{ runner.os }}-${{ github.sha }}
-        restore-keys: |
-          sccache-${{ runner.os }}-
-
     - name: Cache Yocto sstate and downloads
       uses: actions/cache@v4
       with:
