@@ -7,9 +7,6 @@ target:
   - core-image-minimal
 
 repos:
-  # 占位，保持与官方结构一致
-  meta-raspberry:
-
   # 1. BitBake构建引擎（标记为禁用，不作为layer）
   bitbake:
     url: https://git.openembedded.org/bitbake
@@ -33,7 +30,7 @@ repos:
     branch: master
     layers:
       meta-poky:
-      meta-yocto-bsp:
+      meta-yocto-bsp: disabled
 
   # 4. 树莓派硬件层（你的目标机器）
   meta-raspberrypi:
