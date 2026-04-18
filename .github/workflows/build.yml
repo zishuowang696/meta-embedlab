@@ -1,21 +1,57 @@
-name: Build 3B2 Image
+name: Build Yocto Image
 
 on:
   push:
     branches: [ main, master ]
     paths:
       - '3b2.yaml'
+      - 'raspi-tiny.yaml'
       - 'conf/**'
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
+    inputs:
+      config:
+        description: 'KAS config file to build'
+        required: true
+        default: '3b2.yaml'
+        type: choice
+        options:
+          - 3b2.yaml
+          - raspi-tiny.yaml
 
 env:
   SCCACHE_DIR: ${{ github.workspace }}/.cache/sccache
   SCCACHE_CACHE_SIZE: 5G
 
 jobs:
+  detect-config:
+    runs-on: ubuntu-latest
+    outputs:
+      config: ${{ steps.set-config.outputs.config }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Determine which config to build
+      id: set-config
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          CONFIG="${{ github.event.inputs.config }}"
+        else
+          # Auto-detect based on changed files
+          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD 2>/dev/null || echo "")
+          if echo "$CHANGED_FILES" | grep -q "raspi-tiny.yaml"; then
+            CONFIG="raspi-tiny.yaml"
+          else
+            CONFIG="3b2.yaml"
+          fi
+        fi
+        echo "config=$CONFIG" >> $GITHUB_OUTPUT
+        echo "Building: $CONFIG"
+
   build:
+    needs: detect-config
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -38,9 +74,9 @@ jobs:
         path: |
           build/sstate-cache
           build/downloads
-        key: yocto-${{ runner.os }}-${{ hashFiles('3b2.yaml') }}-${{ github.sha }}
+        key: yocto-${{ runner.os }}-${{ hashFiles(needs.detect-config.outputs.config) }}-${{ github.sha }}
         restore-keys: |
-          yocto-${{ runner.os }}-${{ hashFiles('3b2.yaml') }}-
+          yocto-${{ runner.os }}-${{ hashFiles(needs.detect-config.outputs.config) }}-
           yocto-${{ runner.os }}-
 
     - name: Enable user namespaces
@@ -55,7 +91,7 @@ jobs:
 
     - name: Build with kas
       run: |
-        kas build 3b2.yaml
+        kas build ${{ needs.detect-config.outputs.config }}
       env:
         SCCACHE_DIR: ${{ github.workspace }}/.cache/sccache
         SCCACHE_CACHE_SIZE: 5G
@@ -63,7 +99,7 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: build-artifacts
+        name: build-artifacts-${{ needs.detect-config.outputs.config }}
         path: build/tmp/deploy/images/
         retention-days: 7
 
