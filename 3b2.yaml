@@ -123,16 +123,20 @@ local_conf_header:
         HALT,${DL_DIR},100M,1K \
         HALT,${SSTATE_DIR},100M,1K \
         HALT,/tmp,10M,1K"
-  #initramfs-config: |
+  initramfs-config: |
     # 指定用于生成 initramfs 的镜像
-   # INITRAMFS_IMAGE = "core-image-minimal-initramfs"
+    INITRAMFS_IMAGE = "core-image-minimal-initramfs"
 
     # 捆绑模式：将 initramfs 嵌入内核
-    #INITRAMFS_IMAGE_BUNDLE = "1"
+    INITRAMFS_IMAGE_BUNDLE = "0"
 
     # 非捆绑模式：单独输出 cpio.gz 文件
     # 即使 BUNDLE=1，Yocto 仍然会生成独立的 initramfs 文件
-    #INITRAMFS_FSTYPES = "cpio.gz"
+    INITRAMFS_FSTYPES = "cpio.gz"
+    # 可选：为内核添加 initramfs 支持
+    KERNEL_FEATURES:append = " features/initramfs/initramfs.scc"
+     # 确保 initramfs 镜像也以 cpio.gz 格式输出
+    IMAGE_FSTYPES:pn-core-image-minimal-initramfs = "cpio.gz"
   no-graphics: |
     # 显式移除所有图形相关特性
     DISTRO_FEATURES:remove = "x11 wayland opengl vulkan"
@@ -150,5 +154,4 @@ local_conf_header:
     # 确保 initramfs 被构建
     #IMAGE_FSTYPES += "cpio.gz"
 
-    # 可选：为内核添加 initramfs 支持
-    KERNEL_FEATURES:append = " features/initramfs/initramfs.scc"
+    
