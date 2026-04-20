@@ -1,14 +1,11 @@
 # meta-embedlab: Disable Bluetooth in device tree for Raspberry Pi 3B
-# This frees up the mini UART (ttyS0) for other uses
+# This frees up PL011 UART (ttyAMA0) for serial console usage
 
 do_configure:prepend() {
     # Append bluetooth disable snippet to the device tree files
     BT_DISABLE='
-/* Disable Bluetooth - meta-embedlab */
+/* Disable Bluetooth to free PL011 UART - meta-embedlab */
 &bt {
-	status = "disabled";
-};
-&uart0 {
 	status = "disabled";
 };
 '
