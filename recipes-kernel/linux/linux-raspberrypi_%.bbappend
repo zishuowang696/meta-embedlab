@@ -1,12 +1,20 @@
-# meta-embedlab: Disable Bluetooth in device tree for Raspberry Pi 3B
+# meta-embedlab: Disable Bluetooth and configure UART aliases for Raspberry Pi 3B
 # This frees up PL011 UART (ttyAMA0) for serial console usage
 
 do_configure:prepend() {
-    # Append bluetooth disable snippet to the device tree files
-    BT_DISABLE='
+    # Append bluetooth disable and uart alias snippet to the device tree files
+    UART_CONFIG='
 /* Disable Bluetooth to free PL011 UART - meta-embedlab */
 &bt {
 	status = "disabled";
+};
+
+/* Ensure PL011 UART0 is aliased as serial0/ttyAMA0 - meta-embedlab */
+/ {
+	aliases {
+		serial0 = &uart0;
+		serial1 = &uart1;
+	};
 };
 '
 
@@ -18,8 +26,8 @@ do_configure:prepend() {
         if [ -f "$dts" ]; then
             # Append to file if not already present
             if ! grep -q "Disable Bluetooth - meta-embedlab" "$dts"; then
-                echo "$BT_DISABLE" >> "$dts"
-                bbnote "Added Bluetooth disable to $dts"
+                echo "$UART_CONFIG" >> "$dts"
+                bbnote "Added Bluetooth disable and UART aliases to $dts"
             fi
         fi
     done

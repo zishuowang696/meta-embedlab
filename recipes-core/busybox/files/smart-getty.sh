@@ -30,9 +30,7 @@ done
 # 检查设备是否存在
 if [ ! -c "/dev/$TTY_DEV" ]; then
     echo "smart-getty: /dev/$TTY_DEV not found, skipping"
-    # 退出码 0 防止 respawn 循环
     exit 0
 fi
 
-# 设备存在，执行真正的 getty
 exec /sbin/getty -L "$BAUD_RATE" "$TTY_DEV" $REMAINING_ARGS

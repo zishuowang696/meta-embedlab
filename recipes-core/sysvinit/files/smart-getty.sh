@@ -30,7 +30,7 @@ done
 # 检查设备是否存在
 if [ ! -c "/dev/$TTY_DEV" ]; then
     echo "smart-getty: /dev/$TTY_DEV not found, skipping"
-    # 退出码 0 防止 respawn 循环
+    # 退出码 0 止 respawn 循环
     exit 0
 fi
 
