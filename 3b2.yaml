@@ -119,6 +119,9 @@ local_conf_header:
     IMAGE_FSTYPES = "rpi-sdimg tar.gz ext4"
     ENABLE_UART = "1"
     KERNEL_MODULE_AUTOLOAD:append = " dwc2 usbnet smsc95xx"
+
+    # 多串口配置：支持 ttyS0, ttyAMA0, ttyAMA1
+    SERIAL_CONSOLES = "115200;ttyS0 115200;ttyAMA0 115200;ttyAMA1"
   
   # 磁盘监控（防止空间爆满）
   diskmon: |
