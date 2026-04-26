@@ -11,8 +11,6 @@ SRC_URI = "git://github.com/ggerganov/llama.cpp;protocol=https;branch=master"
 SRCREV = "dcad77cc3b0865153f486327064fb0320a57a476"
 PV = "b8933"
 
-S = "${WORKDIR}/git"
-
 inherit cmake pkgconfig
 
 # RPi 3B (Cortex-A53): Release + aarch64 NEON optimizations
