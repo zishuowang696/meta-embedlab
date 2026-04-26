@@ -15,18 +15,17 @@ S = "${WORKDIR}/git"
 
 inherit cmake pkgconfig
 
-# RPi 3B (Cortex-A53) 优化: 开启 ARM NEON 等 aarch64 特有指令集
+# RPi 3B (Cortex-A53): Release + aarch64 NEON optimizations
+# LLAMA_BUILD_EXAMPLES defaults to ON; we build only what we need below
 EXTRA_OECMAKE = "\
     -DCMAKE_BUILD_TYPE=Release \
     -DLLAMA_CPU_AARCH64=ON \
     -DLLAMA_BUILD_TESTS=OFF \
-    -DLLAMA_BUILD_EXAMPLES=OFF \
 "
 
-do_install:append() {
-    # llama-cli 和 llama-server 由 cmake --install 安装,
-    # 此处确保 bin/ 下可执行文件被正确打包
-    :
+# Build only llama-cli + llama-server — skip all other examples
+do_compile() {
+    cmake --build ${B} --target llama-cli --target llama-server -- ${EXTRA_OEMAKE}
 }
 
 FILES:${PN} += "\
@@ -34,5 +33,4 @@ FILES:${PN} += "\
     ${bindir}/llama-server \
 "
 
-# 运行时不需要编译依赖
 RDEPENDS:${PN} += "libstdc++"
