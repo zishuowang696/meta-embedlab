@@ -27,6 +27,14 @@ do_compile() {
     cmake --build ${B} --target llama-cli --target llama-server -- ${EXTRA_OEMAKE}
 }
 
+# Install only the targets we built; cmake --install would try to install
+# unbuilt example targets (e.g. llama-batched), causing do_install to fail.
+do_install() {
+    install -d ${D}${bindir}
+    install -m 0755 ${B}/bin/llama-cli ${D}${bindir}/
+    install -m 0755 ${B}/bin/llama-server ${D}${bindir}/
+}
+
 FILES:${PN} += "\
     ${bindir}/llama-cli \
     ${bindir}/llama-server \
