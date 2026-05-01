@@ -97,7 +97,6 @@ Yocto 6.0 引入了 `UNPACKDIR` 变量，将源文件解包位置从 `${WORKDIR}
 |------|------|------|
 | `meta-TinyAi/recipes-support/fmt/fmt_9.1.0.bbappend` | 将 `${WORKDIR}/fmt-9.1.0` 改为 `${UNPACKDIR}` | ✅ 已应用 |
 | `ci-meta-lib-open/layers/meta-raspberrypi/recipes-kernel/linux/linux-raspberrypi_%.bbappend` | 将 `${WORKDIR}/` 改为 `${UNPACKDIR}/` | ✅ 已应用 |
-| `meta-TinyAi/recipes-init/udev-init-scripts/udev-init-scripts_35.bbappend` | 使用 `${UNPACKDIR}` | ✅ 已应用 |
 | `meta-raspberrypi/recipes-connectivity/bluez5/bluez5` | 搜索到此目录也有 UNPACKDIR 问题 | 📌 可能也需要补丁 |
 
 ---
@@ -156,8 +155,7 @@ Yocto 6.0 引入了 `UNPACKDIR` 变量，将源文件解包位置从 `${WORKDIR}
 │   ├── conf/distro/tinyai.conf
 │   ├── recipes-core/tinyai-demo/
 │   ├── recipes-support/llama-cpp/
-│   ├── recipes-support/llama-cpp-model-qwen/
-│   └── recipes-init/udev-init-scripts/
+│   └── recipes-support/llama-cpp-model-qwen/
 ```
 
 ---
