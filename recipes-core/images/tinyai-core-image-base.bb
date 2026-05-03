@@ -8,7 +8,6 @@ inherit core-image
 
 IMAGE_INSTALL:append = "\
     llama-cpp \
-    tinyai-model-qwen \
     dropbear \
     android-tools-adbd \
 "
