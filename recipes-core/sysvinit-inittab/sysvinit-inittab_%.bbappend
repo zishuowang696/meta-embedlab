@@ -1,2 +1,0 @@
-# 使用 ttyAMA1 作为串口控制台
-SERIAL_CONSOLES = "115200;ttyAMA1"
